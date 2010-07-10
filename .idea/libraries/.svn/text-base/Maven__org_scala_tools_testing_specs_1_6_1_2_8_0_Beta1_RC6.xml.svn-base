@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.scala-tools.testing:specs:1.6.1-2.8.0.Beta1-RC6">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/testing/specs/1.6.1-2.8.0.Beta1-RC6/specs-1.6.1-2.8.0.Beta1-RC6.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/testing/specs/1.6.1-2.8.0.Beta1-RC6/specs-1.6.1-2.8.0.Beta1-RC6-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/testing/specs/1.6.1-2.8.0.Beta1-RC6/specs-1.6.1-2.8.0.Beta1-RC6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

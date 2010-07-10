@@ -1,0 +1,9 @@
+http://www.freshproxy.org/page/%d
+http://www.my-proxy.com/list/proxy.php?list=%d
+http://www.proxylist.net/list/0/0/1/0/%d
+http://www.samair.ru/proxy/proxy-%02d.htm
+http://rosinstrument.com/proxy/
+http://www.proxycn.com/html_proxy/http-%d.html
+http://isd.arizona.edu/asun/image/proxy.txt
+http://www.cnproxy.com/proxy%d.html
+http://www.cnproxy.com/proxyedu%d.html
