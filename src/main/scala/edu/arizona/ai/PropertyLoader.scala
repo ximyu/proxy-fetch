@@ -28,6 +28,7 @@ object PropertyLoader extends Logging {
   // Proxy Testing
   val numOfTestingThread = prop.getProperty("proxy.testing.thread.number").toInt
   val testingBatchSize = prop.getProperty("proxy.testing.batch.size").toInt
+  val testUrl = prop.getProperty("test.url")
   // The file listing all proxy websites
   val proxySiteListFile = prop.getProperty("proxy.sites.list")
   // The maximum response time allowed for a proxy

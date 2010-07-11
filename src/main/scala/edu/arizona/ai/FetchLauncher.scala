@@ -71,18 +71,22 @@ object FetchLauncher extends Connector with Logging {
       loopWhile(count < numOfBatches) {
         receive {
           case "Finished" => count += 1; log.info("One batch of testing finished, count=" + count)
+          case "Stop" => count = numOfBatches
           case _ => log.warn("Unknown message")
         }
         if (count == numOfBatches) {
           log.info("Batch testing finished")
           log.info("Testing: " + (System.currentTimeMillis - testingStartTime) / 1000 + " seconds")
-          val userChoice = readLine().trim
-          if (userChoice == "Y") launchTesting
+          val userChoice = readLine()
+          Thread.sleep(5000)
+          log.info("To start testing another batch")
+          launchTesting
         }
       }
     }
 
     val allProxies = getUntestedProxiesByBatch
+    if (allProxies.size == 0) testingStarter ! "Stop"
     val batchSize = allProxies.size / numOfBatches + 1
     val testingActor = new TestingActor
     testingActor.start

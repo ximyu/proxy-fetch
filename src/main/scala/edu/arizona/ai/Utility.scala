@@ -21,8 +21,6 @@ import edu.arizona.ai.{PropertyLoader, Logging, Connector, Proxy}
 
 object Utility extends Connector with Logging {
 
-  val TestUrl           =   """http://ximyu.dyndns.org/"""
-
   val ipPortRE          =   """\b(?:\d{1,3}\.){3}\d{1,3}:\d{2,6}\b""".r
   val domainNamePortRE  =   """\b[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}:\d{2,6}\b""".r
   val addressPortRE     =   """(.+?):(.+?)""".r
@@ -48,7 +46,7 @@ object Utility extends Connector with Logging {
     val beforeTest = System.currentTimeMillis
     var pageContent = ""
     try {
-      pageContent = Utility.getWebContentWithProxy(Utility.TestUrl, proxy.server, proxy.port).getOrElse("")
+      pageContent = Utility.getWebContentWithProxy(PropertyLoader.testUrl, proxy.server, proxy.port).getOrElse("")
     } catch {
       case e: Exception => log.error("Proxy {}:{} does not work", proxy.server, proxy.port)
     }
@@ -59,7 +57,7 @@ object Utility extends Connector with Logging {
       log.warn("Proxy {}:{} will be discarded::response too slow", proxy.server, proxy.port)
       throw new Exception("Proxy not working")
     } else {
-      val md5WithoutProxy = Utility.md5SumString(Utility.getWebContent(Utility.TestUrl).getOrElse("").getBytes)
+      val md5WithoutProxy = Utility.md5SumString(Utility.getWebContent(PropertyLoader.testUrl).getOrElse("").getBytes)
       if (md5WithProxy == md5WithoutProxy) {
         val newProxy = new Proxy(proxy.server, proxy.port, (System.currentTimeMillis - beforeTest) / 1000.0, proxy.errorTime, true)
         log.info("Proxy {}:{} responded within required time period.", proxy.server, proxy.port)
