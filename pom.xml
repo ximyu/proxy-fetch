@@ -3,9 +3,19 @@
   <groupId>edu.arizona.ai</groupId>
   <artifactId>proxy-fetch</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <inceptionYear>2008</inceptionYear>
+  <name>Crawling proxy websites and test proxy responses</name>
+  <inceptionYear>2010</inceptionYear>
+  <url>http://github.com/ximyu/proxy-fetch</url>
+
+  <developers>
+    <developer>
+      <name>Ximing Yu</name>
+      <id>ximyu</id>
+    </developer>
+  </developers>
+
   <properties>
-    <scala.version>2.8.0-SNAPSHOT</scala.version>
+    <scala.version>2.8.0.RC7</scala.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -96,6 +106,7 @@
           <args>
             <arg>-target:jvm-1.5</arg>
             <arg>-deprecation</arg>
+            <arg>-unchecked</arg>
           </args>
         </configuration>
       </plugin>

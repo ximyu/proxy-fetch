@@ -11,18 +11,15 @@ import java.sql.Connection
 import java.text.SimpleDateFormat
 import java.util.Date
 import org.apache.http.params.CoreProtocolPNames
-import edu.arizona.ai.Connector
-import edu.arizona.ai.Proxy
 import org.slf4j.LoggerFactory
+import edu.arizona.ai.{Logging, Connector, Proxy}
 
 /**
  * @auhtor Ximing Yu
  * @version 0.2, 7/5/2010
  */
 
-object Utility {
-
-  private val log = LoggerFactory.getLogger(getClass)
+object Utility extends Connector with Logging {
 
   val TestUrl           =   """http://ximyu.dyndns.org/"""
 
@@ -58,25 +55,25 @@ object Utility {
     val md5WithProxy = Utility.md5SumString(pageContent.getBytes)
     val span = (System.currentTimeMillis - beforeTest) / 1000
     if (span > 10) {
-      Connector.deleteProxy(proxy.server, proxy.port)
+      deleteProxy(proxy.server, proxy.port)
       log.warn("Proxy {}:{} will be discarded::response too slow", proxy.server, proxy.port)
       throw new Exception("Proxy not working")
     } else {
       val md5WithoutProxy = Utility.md5SumString(Utility.getWebContent(Utility.TestUrl).getOrElse("").getBytes)
       if (md5WithProxy == md5WithoutProxy) {
-        val newProxy = new Proxy(proxy.server, proxy.port, (System.currentTimeMillis - beforeTest) / 1000.0, new Date)
+        val newProxy = new Proxy(proxy.server, proxy.port, (System.currentTimeMillis - beforeTest) / 1000.0, proxy.errorTime, true)
         log.info("Proxy {}:{} responded within required time period.", proxy.server, proxy.port)
-        Connector.updateProxy(newProxy)
+        updateProxy(newProxy)
       } else {
         log.warn("Proxy {}:{} will be discarded::cannot get the test page", proxy.server, proxy.port)
-        Connector.deleteProxy(proxy.server, proxy.port)
+        deleteProxy(proxy.server, proxy.port)
         throw new Exception("Proxy not working")
       }
     }
   }
 
   def persistProxyList(proxyList: List[Proxy]) = {
-    proxyList foreach {Connector.storeProxy(_)}
+    proxyList foreach {storeProxy(_)}
   }
 
   def getWebContent(url: String): Option[String] = {

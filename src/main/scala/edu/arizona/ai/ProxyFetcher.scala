@@ -6,13 +6,12 @@ import org.slf4j.{Logger, LoggerFactory}
 
 /**
  * @auhtor Ximing Yu
- * @version 0.2, 7/5/2010
+ * @version 0.3, 7/10/2010
  */
 
-case class Proxy (server: String, port: Int, respTime: Double, testTime: Date)
+case class Proxy (server: String, port: Int, respTime: Double, errorTime: Int = 0, tested: Boolean = false)
 
-sealed class ProxyFetcher (val urlTemplate: String, val startPage: Int, val endPage: Int) {
-  private val log = LoggerFactory.getLogger(getClass)
+sealed class ProxyFetcher (val urlTemplate: String, val startPage: Int, val endPage: Int) extends Logging{
   protected var proxyList = List[String]()
 
   def fetchProxy: List[Proxy] = {
@@ -29,14 +28,12 @@ sealed class ProxyFetcher (val urlTemplate: String, val startPage: Int, val endP
   def toProxy(str: String): Proxy = {
     log.debug(str)
     val Utility.addressPortRE(server, port) = str
-    new Proxy(server, port.toInt, Int.MaxValue, new Date())
+    new Proxy(server, port.toInt, Int.MaxValue)
   }
 }
 
 class ProxyCnProxyFetcher(urlTemplate: String, startPage: Int, endPage: Int)
         extends ProxyFetcher(urlTemplate, startPage, endPage) {
-  private val log = LoggerFactory.getLogger(getClass)
-  
   override def fetchProxy: List[Proxy] = {
     for (i <- startPage to endPage) {
       val url = format(urlTemplate, i)
@@ -52,8 +49,6 @@ class ProxyCnProxyFetcher(urlTemplate: String, startPage: Int, endPage: Int)
 
 class CnProxyProxyFetcher(urlTemplate: String, startPage: Int, endPage: Int)
         extends ProxyFetcher(urlTemplate, startPage, endPage) {
-  private val log = LoggerFactory.getLogger(getClass)
-
   override def fetchProxy: List[Proxy] = {
     for (i <- startPage to endPage) {
       val url = format(urlTemplate, i)
@@ -69,8 +64,6 @@ class CnProxyProxyFetcher(urlTemplate: String, startPage: Int, endPage: Int)
 
 class SamairProxyFetcher(urlTemplate: String, startPage: Int, endPage: Int)
         extends ProxyFetcher(urlTemplate, startPage, endPage) {
-  private val log = LoggerFactory.getLogger(getClass)
-
   override def fetchProxy: List[Proxy] = {
     for (i <- startPage to endPage) {
       val url = format(urlTemplate, i)
@@ -89,8 +82,6 @@ class SamairProxyFetcher(urlTemplate: String, startPage: Int, endPage: Int)
 }
 
 class RosInstrumentProxyFetcher(url: String) extends ProxyFetcher(url, 0, 0) {
-  private val log = LoggerFactory.getLogger(getClass)
-
   import scala.math._
   override def fetchProxy: List[Proxy] = {
     log.info("Processing URL: {}", url)

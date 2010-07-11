@@ -37,7 +37,7 @@ object ProxyFetchSpec extends Specification {
   "Fetching page 1 of samair.ru" should {
     "return more than 5 proxies" in {
       val fetcher = new SamairProxyFetcher("http://www.samair.ru/proxy/proxy-%02d.htm", 1, 1)
-      fetcher.fetchProxy.size must beGreaterThan(-1)
+      fetcher.fetchProxy.size must beGreaterThan(5)
     }
   }
 
