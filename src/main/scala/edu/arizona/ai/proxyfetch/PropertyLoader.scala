@@ -1,4 +1,4 @@
-package edu.arizona.ai
+package edu.arizona.ai.proxyfetch
 
 import java.util.Properties
 import java.io.{File, FileNotFoundException, IOException, FileInputStream}

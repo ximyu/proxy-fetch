@@ -1,7 +1,6 @@
-package edu.arizona.ai
+package edu.arizona.ai.proxyfetch
 
 import scala.actors.Actor._
-import edu.arizona.ai.proxyfetch.Utility
 import actors.{TIMEOUT, Actor}
 import util.Random
 

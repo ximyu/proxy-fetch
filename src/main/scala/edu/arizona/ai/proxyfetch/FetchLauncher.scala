@@ -1,9 +1,8 @@
-package edu.arizona.ai
+package edu.arizona.ai.proxyfetch
 
 import scala.actors.Actor._
 import collection.mutable.ListBuffer
 import org.slf4j.LoggerFactory
-import edu.arizona.ai.proxyfetch.Utility
 import java.util.{Properties, Date}
 import java.io.{IOException, BufferedReader, InputStreamReader, FileInputStream}
 

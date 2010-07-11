@@ -1,9 +1,8 @@
-package edu.arizona.ai
+package edu.arizona.ai.proxyfetch
 
 import org.specs._
 import org.specs.runner.{ConsoleRunner, JUnit4}
 import java.util.Date
-import edu.arizona.ai.proxyfetch.Utility
 
 /**
  * @auhtor Ximing Yu

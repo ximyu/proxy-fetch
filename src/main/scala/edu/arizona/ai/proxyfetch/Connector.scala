@@ -1,4 +1,4 @@
-package edu.arizona.ai
+package edu.arizona.ai.proxyfetch
 
 import org.slf4j.LoggerFactory
 import java.sql.{DriverManager, Connection}

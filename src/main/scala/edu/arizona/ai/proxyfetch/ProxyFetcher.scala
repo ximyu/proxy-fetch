@@ -1,7 +1,6 @@
-package edu.arizona.ai
+package edu.arizona.ai.proxyfetch
 
 import java.util.Date
-import edu.arizona.ai.proxyfetch.Utility
 import org.slf4j.{Logger, LoggerFactory}
 
 /**

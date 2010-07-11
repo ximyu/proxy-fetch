@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import org.slf4j.LoggerFactory
 import org.apache.http.params.{CoreConnectionPNames, CoreProtocolPNames}
-import edu.arizona.ai.{PropertyLoader, Logging, Connector, Proxy}
 
 /**
  * @auhtor Ximing Yu
@@ -99,7 +98,7 @@ object Utility extends Connector with Logging {
       val entity = response.getEntity
       return new Some(convertStreamToString(entity.getContent))
     } catch {
-      case e: Exception => println("[ERROR] " + e.getMessage); return Some("")
+      case e: Exception => log.error("[ERROR]: {}", e.getMessage); return Some("")
     } finally {
       client.getConnectionManager.shutdown
     }
@@ -113,7 +112,7 @@ object Utility extends Connector with Logging {
       val entity = response.getEntity
       return new Some(convertStreamToString(entity.getContent))
     } catch {
-      case e: Exception => println("[ERROR] " + e.getMessage); return Some("")
+      case e: Exception => log.error("[ERROR]: {}", e.getMessage); return Some("")
     } finally {
       client.getConnectionManager.shutdown
     }
