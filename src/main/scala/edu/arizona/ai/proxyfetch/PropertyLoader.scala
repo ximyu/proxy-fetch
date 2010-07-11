@@ -12,18 +12,17 @@ import java.io.{File, FileNotFoundException, IOException, FileInputStream}
  */
 
 object PropertyLoader extends Logging {
-  private val defaultPropFile = "default.properties"
+  private val defaultPropFile = "proxy-fetch-default.properties"
   private val overridePropFile = "proxy-fetch.properties"
   private val prop = new Properties
   try {
-    prop.load(new FileInputStream(ClassLoader.getSystemResource(defaultPropFile).getFile))
+    prop.load(ClassLoader.getSystemResourceAsStream(defaultPropFile))
     val overrideFile = new File(overridePropFile)
     if (overrideFile.exists) {
       prop.load(new FileInputStream(overrideFile))
     }
   } catch {
-    case e: IOException => log.error("Failed to load the property file: {}", defaultPropFile)
-    case e: FileNotFoundException => log.error("Cannot find the property file: {}", defaultPropFile)
+    case e: Exception => log.error("Failed to load the property file from : {}", ClassLoader.getSystemResource(defaultPropFile).getFile)
   }
   // Proxy Testing
   val numOfTestingThread = prop.getProperty("proxy.testing.thread.number").toInt
