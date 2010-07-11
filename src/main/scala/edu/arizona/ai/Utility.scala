@@ -10,9 +10,9 @@ import java.security.MessageDigest
 import java.sql.Connection
 import java.text.SimpleDateFormat
 import java.util.Date
-import org.apache.http.params.CoreProtocolPNames
 import org.slf4j.LoggerFactory
-import edu.arizona.ai.{Logging, Connector, Proxy}
+import org.apache.http.params.{CoreConnectionPNames, CoreProtocolPNames}
+import edu.arizona.ai.{PropertyLoader, Logging, Connector, Proxy}
 
 /**
  * @auhtor Ximing Yu
@@ -76,26 +76,48 @@ object Utility extends Connector with Logging {
     proxyList foreach {storeProxy(_)}
   }
 
-  def getWebContent(url: String): Option[String] = {
+  def getHttpClient: HttpClient = {
     val client: HttpClient = new DefaultHttpClient()
     client.getParams.setParameter(CoreProtocolPNames.USER_AGENT, "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/534.1 (KHTML, like Gecko) Chrome/6.0.437.3 Safari/534.1")
+    client.getParams.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, PropertyLoader.responseLimit.toInt * 1000)
+    client.getParams.setParameter(CoreConnectionPNames.SO_TIMEOUT, PropertyLoader.responseLimit.toInt * 1000)
+    client
+  }
+
+  def getHttpClient(server: String, port: Int): HttpClient = {
+    val client: HttpClient = new DefaultHttpClient()
+    client.getParams.setParameter(CoreProtocolPNames.USER_AGENT, "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/534.1 (KHTML, like Gecko) Chrome/6.0.437.3 Safari/534.1")
+    client.getParams.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, PropertyLoader.responseLimit.toInt * 1000)
+    client.getParams.setParameter(CoreConnectionPNames.SO_TIMEOUT, PropertyLoader.responseLimit.toInt * 1000)
+    client.getParams.setParameter(ConnRoutePNames.DEFAULT_PROXY, new HttpHost(server, port))
+    client
+  }
+
+  def getWebContent(url: String): Option[String] = {
+    val client = getHttpClient
     try {
-      val entity =  client.execute(new HttpGet(url)).getEntity
+      val response = client.execute(new HttpGet(url))
+      if (response.getStatusLine.getStatusCode != 200) throw new Exception("Server response: " + response.getStatusLine.toString)
+      val entity = response.getEntity
       return new Some(convertStreamToString(entity.getContent))
     } catch {
-      case e: Exception => println("[ERROR] " + e.getMessage); return new Some("")
+      case e: Exception => println("[ERROR] " + e.getMessage); return Some("")
+    } finally {
+      client.getConnectionManager.shutdown
     }
   }
 
   def getWebContentWithProxy(url: String, server: String, port: Int): Option[String] = {
-    val client: HttpClient = new DefaultHttpClient()
-    client.getParams.setParameter(CoreProtocolPNames.USER_AGENT, "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/534.1 (KHTML, like Gecko) Chrome/6.0.437.3 Safari/534.1")
-    client.getParams.setParameter(ConnRoutePNames.DEFAULT_PROXY, new HttpHost(server, port))
+    val client = getHttpClient(server, port)
     try {
-      val entity = client.execute(new HttpGet(url)).getEntity
+      val response = client.execute(new HttpGet(url))
+      if (response.getStatusLine.getStatusCode != 200) throw new Exception("Server response: " + response.getStatusLine.toString)
+      val entity = response.getEntity
       return new Some(convertStreamToString(entity.getContent))
     } catch {
-      case e: Exception => println("[ERROR] " + e.getMessage); return None
+      case e: Exception => println("[ERROR] " + e.getMessage); return Some("")
+    } finally {
+      client.getConnectionManager.shutdown
     }
   }
 

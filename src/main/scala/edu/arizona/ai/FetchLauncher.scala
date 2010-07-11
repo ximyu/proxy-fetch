@@ -19,7 +19,7 @@ object FetchLauncher extends Connector with Logging {
   val caller = self
 
   def main(args: Array[String]) {
-    launchCrawling(doTesting = true)
+    launchCrawling(doTesting = true, firstTime = true)
   }
 
   def launchCrawling(doTesting: Boolean = false, firstTime: Boolean = false) = {
@@ -62,10 +62,10 @@ object FetchLauncher extends Connector with Logging {
     }
   }
 
-  def launchTesting = {
+  def launchTesting: Unit = {
     val numOfBatches = PropertyLoader.numOfTestingThread
     val testingStartTime = System.currentTimeMillis
-    log.info("Proxy testing started...Divided into " + numOfBatches + " batches")
+    log.info("Proxy testing started in parallel. " + numOfBatches + " threads used.")
     val testingStarter = actor {
       var count = 0
       loopWhile(count < numOfBatches) {
@@ -74,13 +74,11 @@ object FetchLauncher extends Connector with Logging {
           case _ => log.warn("Unknown message")
         }
         if (count == numOfBatches) {
-          log.info("All testing finished")
-          log.info("Summary:")
-          log.info("Spidering: " + spideringTime / 1000 + " seconds")
+          log.info("Batch testing finished")
           log.info("Testing: " + (System.currentTimeMillis - testingStartTime) / 1000 + " seconds")
-          log.info("Total time: " + (System.currentTimeMillis - startTime) / 1000 + " seconds")
+          val userChoice = readLine().trim
+          if (userChoice == "Y") launchTesting
         }
-
       }
     }
 
