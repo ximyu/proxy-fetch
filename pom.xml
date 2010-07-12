@@ -109,7 +109,7 @@
           <launchers>
             <launcher>
               <id>ProxyFetchLauncher</id>
-              <mainClass>edu.arizona.ai.FetchLauncher</mainClass>
+              <mainClass>edu.arizona.ai.proxyfetch.FetchLauncher</mainClass>
             </launcher>
 	      </launchers>
           <scalaVersion>${scala.version}</scalaVersion>
