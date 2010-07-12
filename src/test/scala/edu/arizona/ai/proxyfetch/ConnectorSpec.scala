@@ -54,7 +54,9 @@ object ConnectorSpec extends Specification {
     "be persisted in db" in {
       val p1 = new Proxy("239.201.20.34", 8080, 1.26)
       updateProxy(p1) must beTrue
+      reportProxyError(p1.server, p1.port)
       getStoredProxies.filter(p => p.server == "239.201.20.34" && p.port == 8080).forall(p => p.respTime == 1.26) must beTrue
+      getStoredProxies.filter(p => p.server == "239.201.20.34" && p.port == 8080).forall(p => p.errorTime == 1) must beTrue
     }
   }
 
