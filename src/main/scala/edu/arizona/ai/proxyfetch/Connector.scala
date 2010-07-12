@@ -66,6 +66,39 @@ trait Connector extends Logging {
   }
 
   /**
+   * Report error for using the proxy. If the proxy has been causing error for
+   * over MAXDEFINED times, then it will be deleted
+   *
+   * @return Whether the error was successfully reported
+   */
+  def reportProxyError(server: String, port: Int): Boolean = {
+    val conn = getConnection
+    try {
+     val ps1 = conn.prepareStatement("SELECT errortime FROM " + tableName + " WHERE server=? AND port=?")
+      ps1.setString(1, server)
+      ps1.setInt(2, port)
+      val rs = ps1.executeQuery
+      if (rs.next) {
+        val errorTime = rs.getInt(1) + 1
+        if (errorTime < PropertyLoader.errorTimeLimit) {
+          val ps2 = conn.prepareStatement("UPDATE " + tableName + " SET errortime=? WHERE server=? AND port=?")
+          ps2.setInt(1, errorTime)
+          ps2.setString(2, server)
+          ps2.setInt(3, port)
+          ps2.executeUpdate
+        } else {
+          deleteProxy(server, port)
+        }
+      }
+      true
+    } catch {
+      case e: Exception => log.error("[ERROR] {}", e.getMessage); false
+    } finally {
+      conn.close
+    }
+  }
+
+  /**
    * @return The proxy rows stored in the database
    */
   def getStoredProxies: List[Proxy] = {
