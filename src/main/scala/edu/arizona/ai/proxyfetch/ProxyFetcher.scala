@@ -8,7 +8,7 @@ import org.slf4j.{Logger, LoggerFactory}
  * @version 0.3, 7/10/2010
  */
 
-case class Proxy (server: String, port: Int, respTime: Double, errorTime: Int = 0, tested: Boolean = false)
+case class Proxy (server: String, port: Int, respTime: Double, var errorTime: Int = 0, tested: Boolean = false)
 
 sealed class ProxyFetcher (val urlTemplate: String, val startPage: Int, val endPage: Int) extends Logging{
   protected var proxyList = List[String]()
