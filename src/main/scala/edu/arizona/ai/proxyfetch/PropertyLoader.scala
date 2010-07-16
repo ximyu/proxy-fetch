@@ -39,4 +39,6 @@ object PropertyLoader extends Logging {
   val dbUsername = prop.getProperty("username")
   val dbPassword = prop.getProperty("password")
   val dbTableName = prop.getProperty("table.name")
+
+  val isFirstRun = if (prop.getProperty("is.first.run") == "true") {true} else {false}
 }
