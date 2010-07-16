@@ -18,17 +18,17 @@ object FetchLauncher extends Connector with Logging {
   val caller = self
 
   def main(args: Array[String]) {
-    launchCrawling(doTesting = true, firstTime = true)
+    launchCrawling(doTesting = true)
   }
 
-  def launchCrawling(doTesting: Boolean = false, firstTime: Boolean = false) = {
+  def launchCrawling(doTesting: Boolean = false) = {
     startTime = System.currentTimeMillis
 
-    if (firstTime)
+    if (PropertyLoader.isFirstRun)
       initDBTable
 
     val is = new FileInputStream(ClassLoader.getSystemResource(PropertyLoader.proxySiteListFile).getFile)
-    Utility.convertStreamToString(is).split("\n") foreach {x=> sites += x.trim}
+    Utility.convertStreamToString(is).split("\n") foreach {x=> if (!x.startsWith("#")) sites += x.trim}
 
     val starter = actor {
       var count = 0
